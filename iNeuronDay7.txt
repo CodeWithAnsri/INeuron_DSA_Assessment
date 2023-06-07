@@ -1,0 +1,410 @@
+QS 1. Given two strings s and t, *determine if they are isomorphic*.
+
+Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character, but a character may map to itself.
+
+
+
+import java.util.Scanner;
+
+public class IsomoStr {
+    public static boolean isIso(String s, String t) {
+        if (s.length() != t.length())
+            return false;
+
+        char[] sto = new char[256]; 
+        char[] tos = new char[256]; 
+
+        for (int i = 0; i < s.length(); i++) {
+            char charS = s.charAt(i);
+            char charT = t.charAt(i);
+
+            
+            if (sto[charS] != '\u0000') {
+                if (sto[charS] != charT)
+                    return false;
+            } else {
+                sto[charS] = charT;
+            }
+
+            
+            if (tos[charT] != '\u0000') {
+                if (tos[charT] != charS)
+                    return false;
+            } else {
+                tos[charT] = charS;
+            }
+        }
+
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Scanner scr = new Scanner(System.in);
+
+        System.out.print("Enter the first string: ");
+        String s = scr.nextLine();
+
+        System.out.print("Enter the second string: ");
+        String t = scr.nextLine();
+
+        boolean isIso = isIso(s, t);
+        System.out.println("Are the strings isomorphic? " + isIso);
+    }
+}
+
+
+💡 **Question 2**
+
+Given a string num which represents an integer, return true *if* num *is a **strobogrammatic number***.
+
+A **strobogrammatic number** is a number that looks the same when rotated 180 degrees (looked at upside down).
+
+
+public class StroticNum {
+    public static boolean IsStro(String num) {
+        int left = 0;
+        int right = num.length() - 1;
+
+        while (left <= right) {
+            char leftChar = num.charAt(left);
+            char rightChar = num.charAt(right);
+
+            if (!IsStroPair(leftChar, rightChar)) {
+                return false;
+            }
+
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+
+    public static boolean IsStroPair(char c1, char c2) {
+        if (c1 == '0' && c2 == '0') {
+            return true;
+        } else if (c1 == '1' && c2 == '1') {
+            return true;
+        } else if (c1 == '6' && c2 == '9') {
+            return true;
+        } else if (c1 == '8' && c2 == '8') {
+            return true;
+        } else if (c1 == '9' && c2 == '6') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+        String num = "69";
+        boolean IsStro = IsStro(num);
+        System.out.println("Is the number strobogrammatic? " + IsStro);
+    }
+}
+public class StroticNum {
+    public static boolean IsStro(String num) {
+        int left = 0;
+        int right = num.length() - 1;
+
+        while (left <= right) {
+            char leftChar = num.charAt(left);
+            char rightChar = num.charAt(right);
+
+            if (!IsStroPair(leftChar, rightChar)) {
+                return false;
+            }
+
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+
+    public static boolean IsStroPair(char c1, char c2) {
+        if (c1 == '0' && c2 == '0') {
+            return true;
+        } else if (c1 == '1' && c2 == '1') {
+            return true;
+        } else if (c1 == '6' && c2 == '9') {
+            return true;
+        } else if (c1 == '8' && c2 == '8') {
+            return true;
+        } else if (c1 == '9' && c2 == '6') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+        String num = "69";
+        boolean IsStro = IsStro(num);
+        System.out.println("Is the number strobogrammatic? " + IsStro);
+    }
+}
+
+Q.3 Given two non-negative integers, num1 and num2 represented as string, return *the sum of* num1 *and* num2 *as a string*.
+
+You must solve the problem without using any built-in library for handling large integers (such as BigInteger). You must also not convert the inputs to integers directly
+
+ANS
+
+public class AddStrings {
+    public static String addStrings(String num1, String num2) {
+        StringBuilder sum = new StringBuilder();
+        int carry = 0;
+        int i = num1.length() - 1;
+        int j = num2.length() - 1;
+
+        while (i >= 0 || j >= 0 || carry != 0) {
+            int digit1 = i >= 0 ? num1.charAt(i) - '0' : 0;
+            int digit2 = j >= 0 ? num2.charAt(j) - '0' : 0;
+
+            int CurSum = digit1 + digit2 + carry;
+            int digSum = CurSum % 10;
+            carry = CurSum / 10;
+
+            sum.insert(0, digSum);
+
+            i--;
+            j--;
+        }
+
+        return sum.toString();
+    }
+
+    public static void main(String[] args) {
+        String num1 = "11";
+        String num2 = "123";
+
+        String sum = addStrings(num1, num2);
+        System.out.println("Sum of " + num1 + " and " + num2 + ": " + sum);
+    }
+}
+
+
+Q 4. Given a string s, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
+
+ANS - 
+public class ReverseWords {
+    public static String reverseWords(String s) {
+        String[] words = s.split(" ");
+
+        StringBuilder RevSent = new StringBuilder();
+        for (String word : words) {
+            String revWord = revStrg(word);
+            RevSent.append(revWord).append(" ");
+        }
+
+        // Remove the trailing whitespace
+        RevSent.setLength(RevSent.length() - 1);
+
+        return RevSent.toString();
+    }
+
+    public static String revStrg(String str) {
+        char[] chars = str.toCharArray();
+        int left = 0;
+        int right = chars.length - 1;
+
+        while (left < right) {
+            char temp = chars[left];
+            chars[left] = chars[right];
+            chars[right] = temp;
+            left++;
+            right--;
+        }
+
+        return new String(chars);
+    }
+
+    public static void main(String[] args) {
+        String s = "IM Student od iNeuron";
+        String reversed = reverseWords(s);
+        System.out.println("Reversed sentence: " + reversed);
+    }
+}
+
+
+💡 **Question 5**
+
+Given a string s and an integer k, reverse the first k characters for every 2k characters counting from the start of the string.
+
+If there are fewer than k characters left, reverse all of them. If there are less than 2k but greater than or equal to k characters, then reverse the first k characters and leave the other as original.
+
+ANS - 
+
+public class RevStrGroup {
+    public static String reverseStr(String s, int k) {
+        char[] chars = s.toCharArray();
+
+        for (int start = 0; start < chars.length; start += 2 * k) {
+            int i = start;
+            int j = Math.min(start + k - 1, chars.length - 1);
+
+            while (i < j) {
+                char temp = chars[i];
+                chars[i] = chars[j];
+                chars[j] = temp;
+                i++;
+                j--;
+            }
+        }
+
+        return new String(chars);
+    }
+
+    public static void main(String[] args) {
+        String s = "abcdefg";
+        int k = 2;
+
+        String reversed = reverseStr(s, k);
+        System.out.println("Reversed string: " + reversed);
+    }
+}
+
+**Question 6**
+
+Given two strings s and goal, return true *if and only if* s *can become* goal *after some number of **shifts** on* s.
+
+A **shift** on s consists of moving the leftmost character of s to the rightmost position.
+
+- For example, if s = "abcde", then it will be "bcdea" after one shift.
+
+**Example 1:**
+
+**Input:** s = "abcde", goal = "cdeab"
+
+**Output:**
+
+true
+
+ANS  - public class StringShifts {
+    public static boolean canShift(String s, String goal) {
+        if (s.length() != goal.length()) {
+            return false;
+        }
+
+        String concatenated = s + s;
+        return concatenated.contains(goal);
+    }
+
+    public static void main(String[] args) {
+        String s = "abcde";
+        String goal = "cdeab";
+
+        boolean canShift = canShift(s, goal);
+        System.out.println("Can s become goal after shifts? " + canShift);
+    }
+}
+
+ **Question 7**
+
+Given two strings s and t, return true *if they are equal when both are typed into empty text editors*. '#' means a backspace character.
+
+Note that after backspacing an empty text, the text will continue empty.
+
+**Example 1:**
+
+**Input:** s = "ab#c", t = "ad#c"
+
+**Output:** true
+
+**Explanation:**
+
+Both s and t become "ac".
+
+ ***ANS  *****
+
+import java.util.Stack;
+
+public class BackComp {
+    public static boolean BackCompr(String s, String t) {
+        String procS = Pross(s);
+        String procT = Pross(t);
+
+        return processedS.equals(processedT);
+    }
+
+    private static String Pross(String str) {
+        Stack<Character> stack = new Stack<>();
+
+        for (char c : str.toCharArray()) {
+            if (c == '#') {
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else {
+                stack.push(c);
+            }
+        }
+
+        StringBuilder ProsStr = new StringBuilder();
+        while (!stack.isEmpty()) {
+            ProsStr.append(stack.pop());
+        }
+
+        return ProsStr.reverse().toString();
+    }
+
+    public static void main(String[] args) {
+        String s = "ab#c";
+        String t = "ad#c";
+
+        boolean isEqual = BackCompr(s, t);
+        System.out.println("Are the strings equal after backspacing? " + isEqual);
+    }
+}
+Question 8**
+
+You are given an array coordinates, coordinates[i] = [x, y], where [x, y] represents the coordinate of a point. Check if these points make a straight line in the XY plane.
+
+ANS -
+ import java.util.Stack;
+
+public class BackComp {
+    public static boolean BackCompr(String s, String t) {
+        String processedS = Pross(s);
+        String processedT = Pross(t);
+
+        return processedS.equals(processedT);
+    }
+
+    private static String Pross(String str) {
+        Stack<Character> stack = new Stack<>();
+
+        for (char c : str.toCharArray()) {
+            if (c == '#') {
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else {
+                stack.push(c);
+            }
+        }
+
+        StringBuilder ProsStr = new StringBuilder();
+        while (!stack.isEmpty()) {
+            ProsStr.append(stack.pop());
+        }
+
+        return ProsStr.reverse().toString();
+    }
+
+    public static void main(String[] args) {
+        String s = "ab#c";
+        String t = "ad#c";
+
+        boolean isEqual = BackCompr(s, t);
+        System.out.println("Are the strings equal after backspacing? " + isEqual);
+    }
+}
+
+
+
+
+
