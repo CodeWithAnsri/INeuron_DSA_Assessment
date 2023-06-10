@@ -1,0 +1,305 @@
+Q.1 Given an integer `n`, return *`true` if it is a power of three. Otherwise, return `false`*.
+
+An integer `n` is a power of three, if there exists an integer `x` such that `n == 3x`.  in java 
+
+**Example 1:**
+Input: n = 27
+Output: true
+Explanation: 27 = 33
+
+code ******************
+
+public class PowerOfThree {
+    public static boolean isPowerOfThree(int n) {
+        if (n <= 0) {
+            return false;
+        }
+
+        while (n % 3 == 0) {
+            n /= 3;
+        }
+
+        return n == 1;
+    }
+
+    public static void main(String[] args) {
+        int n = 27;
+        boolean result = isPowerOfThree(n);
+        System.out.println(result); 
+    }
+}
+
+
+<aside>
+💡 **Question 2**
+
+You have a list `arr` of all integers in the range `[1, n]` sorted in a strictly increasing order. Apply the following algorithm on `arr`:
+
+- Starting from left to right, remove the first number and every other number afterward until you reach the end of the list.
+- Repeat the previous step again, but this time from right to left, remove the rightmost number and every other number from the remaining numbers.
+- Keep repeating the steps again, alternating left to right and right to left, until a single number remains.
+
+Given the integer `n`, return *the last number that remains in* `arr`.
+
+**Example 1:**
+
+code *****
+public class Lastmber {
+    public static int lastRemaining(int n) {
+        boolean leftToRight = true; 
+
+        int remaining = n; 
+        int step = 1; 
+
+        int head = 1;
+
+        while (remaining > 1) {
+            
+            if (leftToRight || remaining % 2 == 1) {
+                head += step;
+            }
+
+            remaining /= 2; 
+            step *= 2; 
+            leftToRight = !leftToRight; 
+        }
+
+        return head;
+    }
+
+    public static void main(String[] args) {
+        int n = 9;
+        int result = lastRemaining(n);
+        System.out.println(result); 
+    }
+}
+
+
+<aside>
+💡 **Question 3**
+
+****Given a set represented as a string, write a recursive code to print all subsets of it. The subsets can be printed in any order.
+
+**Example 1:**
+
+Input :  set = “abc”
+
+Output : { “”, “a”, “b”, “c”, “ab”, “ac”, “bc”, “abc”}
+
+**Example 2:**
+
+Input : set = “abcd”
+
+Output : { “”, “a” ,”ab” ,”abc” ,”abcd”, “abd” ,”ac” ,”acd”, “ad” ,”b”, “bc” ,”bcd” ,”bd” ,”c” ,”cd” ,”d” }
+
+code ***********
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SubsetPrinter {
+    public static List<String> subsets(String set) {
+        List<String> result = new ArrayList<>();
+        generateSubsets(set, 0, "", result);
+        return result;
+    }
+
+    private static void generateSubsets(String set, int index, String current, List<String> result) {
+        if (index == set.length()) {
+            result.add(current);
+        }
+
+        
+        generateSubsets(set, index + 1, current + set.charAt(index), result);
+
+       
+        generateSubsets(set, index + 1, current, result);
+    }
+
+    public static void main(String[] args) {
+        String set = "abc";
+        List<String> subsets = subsets(set);
+        System.out.println(subsets); 
+    }
+}
+
+
+
+💡 **Question 4**
+
+Given a string calculate length of the string using recursion.
+
+**Examples:**
+
+code ***********
+
+public class StringLengthCalculator {
+    public static int calculateLength(String str) {
+        if (str.isEmpty()) {
+            return 0; 
+        } else {
+           
+            return calculateLength(str.substring(1)) + 1;
+        }
+    }
+
+    public static void main(String[] args) {
+        String str = "Hello, World!";
+        int length = calculateLength(str);
+        System.out.println(length); 
+    }
+}
+
+<aside>
+💡 **Question 5**
+
+We are given a string S, we need to find count of all contiguous substrings starting and ending with same character.
+
+CODE ********
+
+
+public class ContiguousSubstringCounter {
+    public static int countContiguousSubstrings(String str) {
+        int count = 0;
+
+        for (int i = 0; i < str.length(); i++) {
+            char startChar = str.charAt(i);
+
+            for (int j = i; j < str.length(); j++) {
+                char endChar = str.charAt(j);
+
+                if (startChar == endChar) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public static void main(String[] args) {
+        String str = "abccba";
+        int count = countContiguousSubstrings(str);
+        System.out.println(count); 
+    }
+
+Question 6**
+
+The [tower of Hanoi](https://en.wikipedia.org/wiki/Tower_of_Hanoi) is a famous puzzle where we have three rods and **N** disks. The objective of the puzzle is to move the entire stack to another rod. You are given the number of discs **N**. Initially, these discs are in the rod 1. You need to print all the steps of discs movement so that all the discs reach the 3rd rod. Also, you need to find the total moves.**Note:** The discs are arranged such that the **top disc is numbered 1** and the **bottom-most disc is numbered N**. Also, all the discs have **different sizes** and a bigger disc **cannot** be put on the top of a smaller disc. Refer the provided link to get a better clarity about the puzzle.
+
+CODE*** 
+ 
+ public class TowerOfHanoi {
+    public static void moveDiscs(int n, char source, char destination, char auxiliary) {
+        if (n == 1) {
+            System.out.println("Move disc 1 from rod " + source + " to rod " + destination);
+            return;
+        }
+
+        moveDiscs(n - 1, source, auxiliary, destination);
+        System.out.println("Move disc " + n + " from rod " + source + " to rod " + destination);
+        moveDiscs(n - 1, auxiliary, destination, source);
+    }
+
+    public static int countMoves(int n) {
+        return (int) Math.pow(2, n) - 1;
+    }
+
+    public static void main(String[] args) {
+        int n = 3;
+        moveDiscs(n, 'A', 'C', 'B');
+        int totalMoves = countMoves(n);
+        System.out.println("Total moves: " + totalMoves);
+    }
+}
+
+
+
+💡 **Question 7**
+
+Given a string **str**, the task is to print all the permutations of **str**. A **permutation** is an arrangement of all or part of a set of objects, with regard to the order of the arrangement. For instance, the words ‘bat’ and ‘tab’ represents two distinct permutation (or arrangements) of a similar three letter word.
+
+CODE **********
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Strg {
+    public static List<String> findMer(String str) {
+        List<String> permo = new ArrayList<>();
+        genPer(str, 0, str.length() - 1, permo);
+        return permo;
+    }
+
+    private static void genPer(String str, int left, int right, List<String> permo) {
+        if (left == right) {
+            permo.add(str);
+            return;
+        }
+
+        for (int i = left; i <= right; i++) {
+            str = swap(str, left, i);
+            genPer(str, left + 1, right, permo);
+            str = swap(str, left, i); 
+        }
+    }
+
+    private static String swap(String str, int i, int j) {
+        char[] chars = str.toCharArray();
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+        return String.valueOf(chars);
+    }
+
+    public static void main(String[] args) {
+        String str = "abb";
+        List<String> permo = findMer(str);
+        for (String permu : permo) {
+            System.out.println(permu);
+        }
+    }
+}
+
+
+
+Question 8**
+
+Given a string, count total number of consonants in it. A consonant is an English alphabet character that is not vowel (a, e, i, o and u). Examples of constants are b, c, d, f, and g.
+
+CODE 
+
+
+public class ConsonantCounter {
+    public static int countConsonants(String str) {
+        int count = 0;
+        str = str.toLowerCase(); 
+
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+
+            if (isConsonant(ch)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static boolean isConsonant(char ch) {
+        return (ch >= 'b' && ch <= 'z') && !isVowel(ch);
+    }
+
+    private static boolean isVowel(char ch) {
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+    }
+
+    public static void main(String[] args) {
+        String str = "Hello World";
+        int consonantCount = countConsonants(str);
+        System.out.println(consonantCount); 
+    }
+}
+
+
