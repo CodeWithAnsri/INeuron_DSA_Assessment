@@ -1,0 +1,717 @@
+Q1 .  Given a linked list of **N** nodes such that it may contain a loop.
+
+A loop here means that the last node of the link list is connected to the node at position X(1-based index). If the link list does not have any loop, X=0.
+
+Remove the loop from the linked list, if it is present, i.e. unlink the last node which is forming the loop.
+
+**Example 1:**
+
+code 
+
+import java.util.Scanner;
+
+class Node {
+    int data;
+    Node next;
+
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+public class RemoveLoopLinkedList {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        
+        System.out.print("Enter the number of nodes in the linked list: ");
+        int n = scanner.nextInt();
+        System.out.print("Enter the values of the nodes: ");
+        Node head = null;
+        Node tail = null;
+        for (int i = 0; i < n; i++) {
+            int value = scanner.nextInt();
+            Node newNode = new Node(value);
+            if (head == null) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
+            }
+        }
+
+       
+        System.out.print("Enter the position of the node to create a loop (0 for no loop): ");
+        int x = scanner.nextInt();
+        if (x != 0) {
+            Node loopNode = head;
+            for (int i = 1; i < x; i++) {
+                loopNode = loopNode.next;
+            }
+            tail.next = loopNode;
+        }
+
+       
+        boolean hasLoop = detectAndRemoveLoop(head);
+        if (hasLoop) {
+            System.out.println("Loop detected and removed.");
+        } else {
+            System.out.println("No loop detected in the linked list.");
+        }
+    }
+
+    private static boolean detectAndRemoveLoop(Node head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+
+        Node slow = head;
+        Node fast = head;
+
+       
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                break;
+            }
+        }
+
+       
+        if (fast == null || fast.next == null) {
+            return false;
+        }
+
+        
+        slow = head;
+        while (slow.next != fast.next) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+       
+        fast.next = null;
+
+        return true;
+    }
+}
+
+
+<aside>
+Q 2
+
+A number **N** is represented in Linked List such that each digit corresponds to a node in linked list. You need to add 1 to it.
+
+code - 
+
+
+class Node {
+    int data;
+    Node next;
+
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+public class AddOneToLinkedList {
+    public static void main(String[] args) {
+        
+        Node head = new Node(9);
+        head.next = new Node(9);
+        head.next.next = new Node(9);
+
+       
+        Node result = addOne(head);
+
+       
+        printLinkedList(result);
+    }
+
+    private static Node addOne(Node head) {
+        
+        Node reversedHead = reverseLinkedList(head);
+
+       
+        Node current = reversedHead;
+        int carry = 1;
+        while (current != null) {
+            int sum = current.data + carry;
+            current.data = sum % 10;
+            carry = sum / 10;
+            if (carry == 0) {
+                break; 
+            }
+            current = current.next;
+        }
+
+        
+        if (carry > 0) {
+            Node newNode = new Node(carry);
+            current.next = newNode;
+        }
+
+       
+        Node result = reverseLinkedList(reversedHead);
+        return result;
+    }
+
+    private static Node reverseLinkedList(Node head) {
+        Node prev = null;
+        Node current = head;
+        Node next;
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        return prev;
+    }
+
+    private static void printLinkedList(Node head) {
+        Node current = head;
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+}
+
+Q 3
+
+Given a Linked List of size N, where every node represents a sub-linked-list and contains two pointers:(i) a **next** pointer to the next node,(ii) a **bottom** pointer to a linked list where this node is head.Each of the sub-linked-list is in sorted order.Flatten the Link List such that all the nodes appear in a single level while maintaining the sorted order. **Note:** The flattened list will be printed using the bottom pointer instead of next pointer.
+
+**Example 1:
+
+CODE -
+
+
+class Node {
+    int data;
+    Node next;
+    Node bottom;
+
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+        this.bottom = null;
+    }
+}
+
+public class FlattenLinkedList {
+    public static void main(String[] args) {
+       
+        Node head = new Node(5);
+        head.next = new Node(10);
+        head.next.next = new Node(19);
+        head.next.next.next = new Node(28);
+
+        head.bottom = new Node(7);
+        head.bottom.bottom = new Node(8);
+        head.bottom.bottom.bottom = new Node(30);
+
+        head.next.bottom = new Node(20);
+
+        head.next.next.bottom = new Node(22);
+        head.next.next.bottom.bottom = new Node(50);
+
+        head.next.next.next.bottom = new Node(35);
+        head.next.next.next.bottom.bottom = new Node(40);
+        head.next.next.next.bottom.bottom.bottom = new Node(45);
+
+       
+        Node flattenedList = flattenLinkedList(head);
+
+        
+        printFlattenedList(flattenedList);
+    }
+
+    private static Node flattenLinkedList(Node head) {
+       
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+       
+        head.next = flattenLinkedList(head.next);
+
+       
+        head = merge(head, head.next);
+
+        
+        return head;
+    }
+
+    private static Node merge(Node a, Node b) {
+        
+        if (a == null) {
+            return b;
+        }
+        if (b == null) {
+            return a;
+        }
+
+        
+        Node dummy = new Node(0);
+        Node tail = dummy;
+
+        
+        while (a != null && b != null) {
+            if (a.data <= b.data) {
+                tail.bottom = a;
+                a = a.bottom;
+            } else {
+                tail.bottom = b;
+                b = b.bottom;
+            }
+            tail = tail.bottom;
+        }
+
+       
+        if (a != null) {
+            tail.bottom = a;
+        } else {
+            tail.bottom = b;
+        }
+
+        
+        return dummy.bottom;
+    }
+
+    private static void printFlattenedList(Node head) {
+        Node current = head;
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.bottom;
+        }
+        System.out.println();
+    }
+}
+
+Question 4**
+
+You are given a special linked list with **N** nodes where each node has a next pointer pointing to its next node. You are also given **M** random pointers, where you will be given **M** number of pairs denoting two nodes **a** and **b**  **i.e. a->arb = b** (arb is pointer to random node)**.**
+
+Construct a copy of the given list. The copy should consist of exactly **N** new nodes, where each new node has its value set to the value of its corresponding original node. Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list represent the same list state. None of the pointers in the new list should point to nodes in the original list.
+
+For example, if there are two nodes **X** and **Y** in the original list, where **X.arb** **-->** **Y**, then for the corresponding two nodes **x** and **y** in the copied list, **x.arb --> y.**
+
+Return the head of the copied linked list.
+
+</aside>
+
+class Node {
+    int data;
+    Node next;
+    Node random;
+
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+        this.random = null;
+    }
+}
+
+public class CopyLinkedListWithRandomPointer {
+    public static void main(String[] args) {
+     
+        Node head = new Node(1);
+        head.next = new Node(2);
+        head.next.next = new Node(3);
+        head.next.next.next = new Node(4);
+        head.next.next.next.next = new Node(5);
+
+        
+        head.random = head.next.next;
+        head.next.random = head.next.next.next.next;
+        head.next.next.random = head;
+        head.next.next.next.random = head.next;
+        head.next.next.next.next.random = head.next.next;
+
+        
+        Node copiedList = copyRandomList(head);
+
+        
+        printLinkedListWithRandomPointers(copiedList);
+    }
+
+    private static Node copyRandomList(Node head) {
+        if (head == null) {
+            return null;
+        }
+
+        
+        Node current = head;
+        while (current != null) {
+            Node copy = new Node(current.data);
+            copy.next = current.next;
+            current.next = copy;
+            current = copy.next;
+        }
+
+       
+        current = head;
+        while (current != null) {
+            if (current.random != null) {
+                current.next.random = current.random.next;
+            }
+            current = current.next.next;
+        }
+
+       
+        Node originalHead = head;
+        Node copiedHead = head.next;
+        Node copiedList = copiedHead;
+        while (originalHead != null) {
+            originalHead.next = originalHead.next.next;
+            if (copiedHead.next != null) {
+                copiedHead.next = copiedHead.next.next;
+            }
+            originalHead = originalHead.next;
+            copiedHead = copiedHead.next;
+        }
+
+        return copiedList;
+    }
+
+    private static void printLinkedListWithRandomPointers(Node head) {
+        Node current = head;
+        while (current != null) {
+            int randomData = (current.random != null) ? current.random.data : -1;
+            System.out.println("Node: " + current.data + ", Random: " + randomData);
+            current = current.next;
+        }
+    }
+}
+
+
+<aside>
+💡 **Question 5**
+
+Given the `head` of a singly linked list, group all the nodes with odd indices together followed by the nodes with even indices, and return *the reordered list*.
+
+The **first** node is considered **odd**, and the **second** node is **even**, and so on.
+
+Note that the relative order inside both the even and odd groups should remain as it was in the input.
+
+You must solve the problem in `O(1)` extra space complexity and `O(n)` time complexity.
+
+
+CODE
+
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode(int val) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+public class ReorderLinkedList {
+    public static void main(String[] args) {
+       
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(3);
+        head.next.next.next = new ListNode(4);
+        head.next.next.next.next = new ListNode(5);
+
+       
+        ListNode reorderedList = reorderList(head);
+
+        
+        printLinkedList(reorderedList);
+    }
+
+    private static ListNode reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        
+        ListNode odd = head;
+        ListNode even = head.next;
+        ListNode evenHead = even;
+
+        
+        while (even != null && even.next != null) {
+            odd.next = even.next; 
+            odd = odd.next;
+            even.next = odd.next; 
+            even = even.next;
+        }
+
+       
+        odd.next = evenHead;
+
+        return head;
+    }
+
+    private static void printLinkedList(ListNode head) {
+        ListNode current = head;
+        while (current != null) {
+            System.out.print(current.val + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+}
+
+Q  6 
+Given a singly linked list of size N. The task is to left-shift the linked list by k nodes, where k is a given positive integer smaller than or equal to length of the linked list.
+
+CODE --
+
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode(int val) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+public class LeftShiftLinkedList {
+    public static void main(String[] args) {
+       
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(3);
+        head.next.next.next = new ListNode(4);
+        head.next.next.next.next = new ListNode(5);
+
+        
+        int k = 2;
+
+        
+        ListNode shiftedList = leftShiftLinkedList(head, k);
+
+       
+        printLinkedList(shiftedList);
+    }
+
+    private static ListNode leftShiftLinkedList(ListNode head, int k) {
+        if (head == null || k == 0) {
+            return head;
+        }
+
+      
+        int length = getLinkedListLength(head);
+
+       
+        k = k % length;
+
+        if (k == 0) {
+            return head; 
+        }
+
+        
+        ListNode current = head;
+        for (int i = 1; i < k; i++) {
+            current = current.next;
+        }
+
+       
+        ListNode newHead = current.next;
+
+        
+        ListNode lastNode = current.next;
+        while (lastNode.next != null) {
+            lastNode = lastNode.next;
+        }
+
+     
+        lastNode.next = head;
+
+       
+        current.next = null;
+
+        return newHead;
+    }
+
+    private static int getLinkedListLength(ListNode head) {
+        int length = 0;
+        ListNode current = head;
+        while (current != null) {
+            length++;
+            current = current.next;
+        }
+        return length;
+    }
+
+    private static void printLinkedList(ListNode head) {
+        ListNode current = head;
+        while (current != null) {
+            System.out.print(current.val + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+}
+
+
+💡 **Q 7
+
+You are given the `head` of a linked list with `n` nodes.
+
+For each node in the list, find the value of the **next greater node**. That is, for each node, find the value of the first node that is next to it and has a **strictly larger** value than it.
+
+Return an integer array `answer` where `answer[i]` is the value of the next greater node of the `ith` node (**1-indexed**). If the `ith` node does not have a next greater node, set `answer[i] = 0`.
+
+CODE = 
+  import java.util.*;
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode(int val) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+public class NextGreaterNode {
+    public static void main(String[] args) {
+                ListNode head = new ListNode(1);
+        head.next = new ListNode(7);
+        head.next.next = new ListNode(5);
+        head.next.next.next = new ListNode(3);
+        head.next.next.next.next = new ListNode(9);
+
+       
+        int[] result = nextGreaterNode(head);
+
+       
+        System.out.println(Arrays.toString(result));
+    }
+
+    private static int[] nextGreaterNode(ListNode head) {
+        if (head == null) {
+            return new int[0];
+        }
+
+        
+        ListNode current = head;
+        while (current != null) {
+            list.add(current.val);
+            current = current.next;
+        }
+
+        int[] result = new int[list.size()];
+        Stack<Integer> stack = new Stack<>();
+
+       
+        for (int i = list.size() - 1; i >= 0; i--) {
+            int val = list.get(i);
+
+           
+            while (!stack.isEmpty() && stack.peek() <= val) {
+                stack.pop();
+            }
+
+           
+            result[i] = stack.isEmpty() ? 0 : stack.peek();
+
+           
+            stack.push(val);
+        }
+
+        return result;
+    }
+}
+
+
+Q 8 Given the `head` of a linked list, we repeatedly delete consecutive sequences of nodes that sum to `0` until there are no such sequences.
+
+After doing so, return the head of the final linked list.  You may return any such answer.
+
+(Note that in the examples below, all sequences are serializations of `ListNode` objects.)
+
+
+
+CODE -- 
+
+import java.util.*;
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode(int val) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+public class DeleteZeroSumSublists {
+    public static void main(String[] args) {
+        
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(-3);
+        head.next.next.next = new ListNode(3);
+        head.next.next.next.next = new ListNode(1);
+
+        
+        ListNode result = deleteZeroSumSublists(head);
+
+        
+        printLinkedList(result);
+    }
+
+    private static ListNode deleteZeroSumSublists(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+
+        Map<Integer, ListNode> map = new HashMap<>();
+        int sum = 0;
+        ListNode current = dummy;
+
+        while (current != null) {
+            sum += current.val;
+
+            if (map.containsKey(sum)) {
+                ListNode start = map.get(sum).next;
+                int tempSum = sum + start.val;
+
+                while (start != current) {
+                    map.remove(tempSum);
+                    start = start.next;
+                    tempSum += start.val;
+                }
+
+                map.get(sum).next = current.next;
+            } else {
+                map.put(sum, current);
+            }
+
+            current = current.next;
+        }
+
+        return dummy.next;
+    }
+
+    private static void printLinkedList(ListNode head) {
+        ListNode current = head;
+        while (current != null) {
+            System.out.print(current.val + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+}
