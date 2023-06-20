@@ -1,0 +1,302 @@
+Given an array **arr[ ]** of size **N** having elements, the task is to find the next greater element for each element of the array in order of their appearance in the array.Next greater element of an element in the array is the nearest element on the right which is greater than the current element.If there does not exist next greater of current element, then next greater element for current element is -1. For example, next greater of the last element is always -1.
+
+**Example 1:**
+Input:
+N = 4, arr[] = [1 3 2 4]
+Output:
+3 4 4 -1
+Explanation:
+In the array, the next larger element
+to 1 is 3 , 3 is 4 , 2 is 4 and for 4 ?
+since it doesn't exist, it is -1.
+
+
+CODE ____________________________________
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+        for (int i = 0; i < n; i++) {
+            int nextGreaterElement = -1;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] > arr[i]) {
+                    nextGreaterElement = arr[j];
+                    break;
+                }
+            }
+            System.out.print(nextGreaterElement + " ");
+        }
+    }
+}
+
+
+Q2 Given an array **a** of integers of length **n**, find the nearest smaller number for every element such that the smaller element is on left side.If no small element present on the left print -1.
+
+CODE _____________________________________________________import java.util.Scanner;
+
+public class NextSmallerElement {
+
+  public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+
+    int n = scanner.nextInt();
+    int[] arr = new int[n];
+    for (int i = 0; i < n; i++) {
+      arr[i] = scanner.nextInt();
+    }
+
+    int[] ng = nextSmallerElement(arr, n);
+    for (int i = 0; i < n; i++) {
+      System.out.println(ng[i]);
+    }
+  }
+
+  private static int[] nextSmallerElement(int[] arr, int n) {
+    int[] ng = new int[n];
+    Stack<Integer> stack = new Stack<>();
+
+    for (int i = 0; i < n; i++) {
+      while (!stack.isEmpty() && arr[i] <= stack.peek()) {
+        stack.pop();
+      }
+
+      ng[i] = stack.isEmpty() ? -1 : stack.peek();
+      stack.push(arr[i]);
+    }
+
+    return ng;
+  }
+}
+
+
+Q 3. Implement a Stack using two queues **q1** and **q2**.
+
+**Example 1:**
+Input:
+push(2)
+push(3)
+pop()
+push(4)
+pop()
+Output:3 4
+Explanation:
+push(2) the stack will be {2}
+push(3) the stack will be {2 3}
+pop()   poped element will be 3 the
+        stack will be {2}
+push(4) the stack will be {2 4}
+pop()   poped element will be 4
+
+CODE ________________________________________________________________
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class StackUsingTwoQueues {
+    Queue<Integer> q1 = new LinkedList<>();
+    Queue<Integer> q2 = new LinkedList<>();
+
+    public void push(int x) {
+        q1.add(x);
+    }
+
+    public int pop() {
+        if (q1.isEmpty()) {
+            return -1;
+        }
+        while (q1.size() > 1) {
+            q2.add(q1.remove());
+        }
+        int poppedElement = q1.remove();
+        Queue<Integer> temp = q1;
+        q1 = q2;
+        q2 = temp;
+        return poppedElement;
+    }
+
+    public static void main(String[] args) {
+        StackUsingTwoQueues stack = new StackUsingTwoQueues();
+        stack.push(2);
+        stack.push(3);
+        System.out.print(stack.pop() + " ");
+        stack.push(4);
+        System.out.print(stack.pop() + " ");
+    }
+}
+Question 4**
+
+You are given a stack **St**. You have to reverse the stack using recursion.
+
+CODE______________________________________________
+
+import java.util.Stack;
+
+public class ReverseStackUsingRecursion {
+    public static void reverse(Stack<Integer> stack) {
+        if (stack.isEmpty()) {
+            return;
+        }
+        int temp = stack.pop();
+        reverse(stack);
+        insertAtBottom(stack, temp);
+    }
+
+    private static void insertAtBottom(Stack<Integer> stack, int x) {
+        if (stack.isEmpty()) {
+            stack.push(x);
+            return;
+        }
+        int temp = stack.pop();
+        insertAtBottom(stack, x);
+        stack.push(temp);
+    }
+
+    public static void main(String[] args) {
+        Stack<Integer> stack = new Stack<>();
+        stack.push(3);
+        stack.push(2);
+        stack.push(1);
+        stack.push(7);
+        stack.push(6);
+        System.out.println("Original Stack: " + stack);
+        reverse(stack);
+        System.out.println("Reversed Stack: " + stack);
+    }
+}
+
+**Question 5**
+ You are given a string **S**, the task is to reverse the string using stack. Input: S="GeeksforGeeks" Output: skeeGrofskeeG
+
+CODE_______________________________________________________________________
+
+
+import java.util.Stack;
+
+public class ReverseStringUsingStack {
+    public static String reverse(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            stack.push(s.charAt(i));
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop());
+        }
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        String s = "GeeksforGeeks";
+        System.out.println("Original String: " + s);
+        System.out.println("Reversed String: " + reverse(s));
+    }
+}
+
+Q.6 Given string S representing a postfix expression, the task is to evaluate the expression and find the final value. Operators will only include the basic arithmetic operators like *, /, + and -.
+
+CODE________________________________________________________________________
+
+
+import java.util.*;
+
+public class PostfixEvaluation {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the postfix expression: ");
+        String S = sc.nextLine();
+        
+        int result = evaluatePostfixExpression(S);
+        
+        System.out.println("Final value: " + result);
+    }
+    
+    public static int evaluatePostfixExpression(String expression) {
+        Stack<Integer> stack = new Stack<>();
+        
+        for (int i = 0; i < expression.length(); i++) {
+            char ch = expression.charAt(i);
+            
+            if (Character.isDigit(ch)) {
+                stack.push(ch - '0');
+            } else {
+                int operand2 = stack.pop();
+                int operand1 = stack.pop();
+                int result = performOperation(ch, operand1, operand2);
+                stack.push(result);
+            }
+        }
+        
+        return stack.pop();
+    }
+    
+    public static int performOperation(char operator, int operand1, int operand2) {
+        switch (operator) {
+            case '+':
+                return operand1 + operand2;
+            case '-':
+                return operand1 - operand2;
+            case '*':
+                return operand1 * operand2;
+            case '/':
+                return operand1 / operand2;
+            default:
+                throw new IllegalArgumentException("Invalid operator: " + operator);
+        }
+    }
+}
+
+
+Q 7. Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the `MinStack` class:
+
+- `MinStack()` initializes the stack object.
+- `void push(int val)` pushes the element `val` onto the stack.
+- `void pop()` removes the element on the top of the stack.
+- `int top()` gets the top element of the stack.
+- `int getMin()` retrieves the minimum element in the stack.
+
+You must implement a solution with `O(1)` time complexity for each function.
+
+CODE _____________________________________________
+
+import java.util.Stack;
+
+public class MinStack {
+    private Stack<Integer> stack;
+    private Stack<Integer> minStack;
+
+    public MinStack() {
+        stack = new Stack<>();
+        minStack = new Stack<>();
+    }
+
+    public void push(int val) {
+        stack.push(val);
+        if (minStack.isEmpty() || val <= minStack.peek()) {
+            minStack.push(val);
+        }
+    }
+
+    public void pop() {
+        int val = stack.pop();
+        if (val == minStack.peek()) {
+            minStack.pop();
+        }
+    }
+
+    public int top() {
+        return stack.peek();
+    }
+
+    public int getMin() {
+        return minStack.peek();
+    }
+}
