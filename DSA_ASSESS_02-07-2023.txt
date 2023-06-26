@@ -1,0 +1,129 @@
+Question-1:
+
+Given a Binary Tree (Bt), convert it to a Doubly Linked List(DLL). The left and right pointers in nodes are to be used as previous and next pointers respectively in converted DLL. The order of nodes in DLL must be the same as in Inorder for the given Binary Tree. The first node of Inorder traversal (leftmost node in BT) must be the head node of the DLL.
+
+CODE_____________________________________________________________
+
+import java.util.*;
+
+public class ConvertBinaryTreeToDoublyLinkedListInorderTraversal {
+
+    private static class Node {
+        int data;
+        Node prev;
+        Node next;
+
+        public Node(int data) {
+            this.data = data;
+            this.prev = null;
+            this.next = null;
+        }
+    }
+
+    public static Node convertBinaryTreeToDoublyLinkedListInorderTraversal(Node root) {
+        Node prev = null;
+        Node head = null;
+
+        Stack<Node> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            Node curr = stack.pop();
+
+            if (head == null) {
+                head = curr;
+            } else {
+                curr.prev = prev;
+                prev.next = curr;
+            }
+
+            prev = curr;
+
+            if (curr.left != null) {
+                stack.push(curr.left);
+            }
+
+            if (curr.right != null) {
+                stack.push(curr.right);
+            }
+        }
+
+        return head;
+    }
+
+    public static void main(String[] args) {
+        Node root = new Node(10);
+        root.left = new Node(5);
+        root.right = new Node(20);
+        root.right.left = new Node(30);
+        root.right.right = new Node(35);
+
+        Node dll = convertBinaryTreeToDoublyLinkedListInorderTraversal(root);
+
+        Node curr = dll;
+        while (curr != null) {
+            System.out.println(curr.data);
+            curr = curr.next;
+        }
+}
+    
+
+Question-2
+
+A Given a binary tree, the task is to flip the binary tree towards the right direction that is clockwise. See the below examples to see the transformation.
+
+In the flip operation, the leftmost node becomes the root of the flipped tree and its parent becomes its right child and the right sibling becomes its left child and the same should be done for all left most nodes recursively.
+
+
+CODE___________________________________________________________________________________________________________
+
+import java.util.*;
+
+public class FlipBinaryTreeTowardsRightDirection {
+
+    private static class Node {
+        int data;
+        Node left;
+        Node right;
+
+        public Node(int data) {
+            this.data = data;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
+    public static void flipTree(Node root) {
+        if (root == null) {
+            return;
+        }
+
+        Node temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+
+        flipTree(root.left);
+        flipTree(root.right);
+    }
+
+    public static void main(String[] args) {
+        Node root = new Node(1);
+        root.left = new Node(2);
+        root.right = new Node(3);
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+        root.right.left = new Node(6);
+        root.right.right = new Node(7);
+
+        flipTree(root);
+
+        System.out.println(root.data);
+        System.out.println(root.right.data);
+        System.out.println(root.left.data);
+        System.out.println(root.left.right.data);
+        System.out.println(root.left.left.data);
+        System.out.println(root.right.right.data);
+        System.out.println(root.right.left.data);
+    }
+}
+
