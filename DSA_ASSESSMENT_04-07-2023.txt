@@ -1,0 +1,46 @@
+Question-1:
+
+Given preorder of a binary tree, calculate its **[depth(or height)](https://www.geeksforgeeks.org/write-a-c-program-to-find-the-maximum-depth-or-height-of-a-tree/)** [starting from depth 0]. The preorder is given as a string with two possible characters.
+
+1. ‘l’ denotes the leaf
+2. ‘n’ denotes internal node
+
+The given tree can be seen as a full binary tree where every node has 0 or two children. The two children of a node can ‘n’ or ‘l’ or mix of both.
+
+Input  : nlnll
+Output : 2
+Explanation :
+
+
+CODE - 
+
+public class BinaryTreeDepth {
+    static int findDepth(String preorder) {
+        int[] index = {0};
+        return calculateDepth(preorder, index, 0);
+    }
+    
+    static int calculateDepth(String preorder, int[] index, int depth) {
+        if (index[0] >= preorder.length())
+            return depth;
+        
+        char node = preorder.charAt(index[0]);
+        index[0]++;
+        
+        if (node == 'l') {
+            return depth;
+        } else if (node == 'n') {
+            int leftDepth = calculateDepth(preorder, index, depth + 1);
+            int rightDepth = calculateDepth(preorder, index, depth + 1);
+            return Math.max(leftDepth, rightDepth);
+        }
+        
+        return -1; 
+    }
+    
+    public static void main(String[] args) {
+        String preorder = "nlnll";
+        int depth = findDepth(preorder);
+        System.out.println("Depth of the binary tree: " + depth);
+    }
+}
