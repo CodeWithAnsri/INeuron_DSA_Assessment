@@ -1,0 +1,213 @@
+                                                        04-07-2023 _________mock_test_
+
+Q 1. Write a PySpark code to read a CSV file named "employees.csv" containing the following columns: "employee_id", "name", "age", "department". Display the top 10 records from the DataFrame.
+
+CODE _________________
+
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.getOrCreate()
+
+df = spark.read.csv("employees.csv", header=True, inferSchema=True)
+
+df.show(10)
+
+Q 2. Given a PySpark DataFrame named "sales_data" with columns "product_name" and "revenue", write a code to calculate the total revenue for each product and display the result in descending order.
+
+CODE ______________________
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import sum
+from pyspark.sql.window import Window
+from pyspark.sql.functions import desc
+
+spark = SparkSession.builder.getOrCreate()
+total_revenue_df = sales_data.groupBy("product_name").agg(sum("revenue").alias("total_revenue"))
+sorted_df = total_revenue_df.orderBy(desc("total_revenue"))
+sorted_df.show()
+
+Q 3.  Write a PySpark code to read a JSON file named "students.json" containing student records with the following schema: "name" (string), "age" (integer), "grade" (string). Filter the DataFrame to include only students whose age is greater than 18.
+
+CODE _________________________
+
+
+
+
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.getOrCreate()
+
+df = spark.read.json("students.json")
+filtered_df = df.filter(df.age > 18)
+filtered_df.show()
+
+
+
+
+
+Q 4. Consider a PySpark DataFrame named "transactions" with columns "transaction_id", "user_id", and "amount". Write a code to calculate the average transaction amount for each user and display the result.
+
+CODE ____________________
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import avg
+
+
+spark = SparkSession.builder.getOrCreate()
+
+average_amount_df = transactions.groupBy("user_id").agg(avg("amount").alias("average_amount"))
+
+
+average_amount_df.show()
+
+Q 5. Given a PySpark DataFrame named "logs" with columns "timestamp" (timestamp) and "event" (string), write a code to count the number of events that occurred in each hour and display the result sorted by the hour.
+
+
+CODE_________________________
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import hour
+from pyspark.sql.functions import count
+
+
+spark = SparkSession.builder.getOrCreate()
+
+
+hourly_count_df = logs.withColumn("hour", hour("timestamp")).groupBy("hour").agg(count("event").alias("event_count"))
+
+
+sorted_df = hourly_count_df.orderBy("hour")
+
+
+sorted_df.show()
+
+
+Q 6.  Retrieve all the customers from the "Customers" table whose age is greater than 25 and have made at least one purchase.
+
+CODE_________________________
+
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.getOrCreate()
+query = """
+    SELECT *
+    FROM Customers
+    WHERE age > 25
+    AND customer_id IN (
+        SELECT customer_id
+        FROM Purchases
+    )
+"""
+result_df = spark.sql(query)
+result_df.show()
+
+Q 7.  Find the total number of orders placed by each customer and display the results in descending order of the number of orders.
+
+
+CODE ______________
+
+from pyspark.sql import SparkSession
+
+
+spark = SparkSession.builder.getOrCreate()
+
+
+query = """
+    SELECT customer_id, COUNT(order_id) as total_orders
+    FROM Orders
+    GROUP BY customer_id
+    ORDER BY total_orders DESC
+"""
+
+
+result_df = spark.sql(query)
+
+
+result_df.show()
+
+Q 8.  Retrieve the names of all products that are currently out of stock from the "Products" table.
+
+CODE ________________________________
+
+
+from pyspark.sql import SparkSession
+
+
+spark = SparkSession.builder.getOrCreate()
+
+
+products_df = spark.read.format("jdbc") \
+    .option("url", "jdbc:postgresql://your_database_host:your_port/your_database_name") \
+    .option("dbtable", "Products") \
+    .option("user", "your_username") \
+    .option("password", "your_password") \
+    .load()
+
+
+out_of_stock_products_df = products_df.filter(products_df.stock_quantity == 0)
+
+out_of_stock_product_names_df = out_of_stock_products_df.select("name")
+
+out_of_stock_product_names = out_of_stock_product_names_df.rdd.flatMap(lambda x: x).collect()
+
+
+for product_name in out_of_stock_product_names:
+    print(product_name)
+
+Q 9. To calculate the average price of all products in each category and display the results along with the category name using PySpark, you can use the following code:
+
+
+
+CODE__________________
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+
+
+spark = SparkSession.builder.getOrCreate()
+
+
+products_df = spark.read.format("jdbc") \
+    .option("url", "jdbc:postgresql://your_database_host:your_port/your_database_name") \
+    .option("dbtable", "Products") \
+    .option("user", "your_username") \
+    .option("password", "your_password") \
+    .load()
+
+
+average_price_df = products_df.groupBy("category").agg(F.avg("price").alias("average_price"))
+
+
+average_price_df.show()
+
+
+Q10.  Retrieve the top 5 customers who have spent the highest total amount on purchases. 
+
+
+CODE __________________
+
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+
+
+spark = SparkSession.builder.getOrCreate()
+
+
+purchases_df = spark.read.format("jdbc") \
+    .option("url", "jdbc:postgresql://your_database_host:your_port/your_database_name") \
+    .option("dbtable", "Purchases") \
+    .option("user", "your_username") \
+    .option("password", "your_password") \
+    .load()
+
+
+customer_spending_df = purchases_df.groupBy("customer_id").agg(F.sum("amount").alias("total_spending"))
+
+
+sorted_customer_spending_df = customer_spending_df.orderBy(F.desc("total_spending"))
+
+
+top_5_customers_df = sorted_customer_spending_df.limit(5)
+
+
+top_5_customers_df.show()
+
+
